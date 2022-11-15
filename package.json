@@ -7,7 +7,7 @@
     "start": "node ./dist/app.js",
     "dev": "nodemon ./src/app.ts",
     "build": "yarn lint && tsc -p .",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha -r ts-node/register './tests/**/*.ts'",
     "lint": "NODE_ENV=\"production\" eslint --ext .ts src/",
     "configure-husky": "npx husky install && npx husky add .husky/pre-commit \"npx --no-install lint-staged\""
   },
@@ -23,6 +23,10 @@
     }
   },
   "dependencies": {
+    "@types/chai": "^4.3.4",
+    "@types/mocha": "^10.0.0",
+    "chai": "^4.3.7",
+    "mocha": "^10.1.0",
     "mqtt": "^4.3.7"
   },
   "devDependencies": {
