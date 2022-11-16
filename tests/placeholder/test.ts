@@ -1,4 +1,4 @@
-import 'mocha'
+import '@types/mocha'
 
 import { assert } from 'chai'
 
