@@ -1,6 +1,11 @@
 image: node:latest
 
 # CI for backend, built with Yarn.
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+
 stages:          # List of stages for jobs, and their order of execution
   - build
   - test
