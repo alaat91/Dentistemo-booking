@@ -1,3 +1,5 @@
+import 'mocha'
+
 import { assert } from 'chai'
 
 describe('Placeholder Test', function () {
