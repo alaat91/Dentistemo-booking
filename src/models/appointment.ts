@@ -14,14 +14,15 @@ interface Appointment {
 
 // Schema
 const appointmentSchema = new Schema({
-  user_id: String,
-  request_id: String,
-  dentist_id: String,
-  issuance: Boolean,
-  date: Date,
-  price: Number,
+  user_id: { type: String, required: true},
+  request_id: { type: String, required: true},
+  dentist_id: { type: String, required: true},
+  issuance: { type: Boolean, required: true},
+  date: { type: Date, required: true},
+  price: { type: Number, required: true},
   treatment: { 
     type: String,
+    required: true,
     enum: ["null"]
   }
 })
