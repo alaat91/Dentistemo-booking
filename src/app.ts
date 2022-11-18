@@ -2,6 +2,7 @@ import mqtt from 'mqtt'
 import * as dotenv from 'dotenv'
 dotenv.config()
 
+const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/dentistimo'
 const client = mqtt.connect(process.env.MQTT_URI as string)
 
 client.on('connect', () => {
