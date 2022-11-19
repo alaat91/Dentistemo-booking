@@ -1,8 +1,8 @@
 /* userid:  String, requestid: String , dentistid: String , issuance: boolean, date: Date, price: float, treatment: String/Enum */
-import { Document, Schema, model } from 'mongoose'
+import { Schema, model } from 'mongoose'
 
 // Interface
-export interface Appointment extends Document {
+export interface IAppointment {
   user_id: string,
   request_id: string,
   dentist_id: string,
@@ -13,7 +13,7 @@ export interface Appointment extends Document {
 }
 
 // Schema
-export const appointmentSchema = new Schema<Appointment>({
+export const appointmentSchema = new Schema<IAppointment>({
   user_id: { type: String, required: true},
   request_id: { type: String, required: true},
   dentist_id: { type: String, required: true},
@@ -27,4 +27,4 @@ export const appointmentSchema = new Schema<Appointment>({
   }
 })
 
-export default model<Appointment>('appointment', appointmentSchema)
+export default model<IAppointment>('appointment', appointmentSchema)
