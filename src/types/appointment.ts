@@ -2,7 +2,7 @@
 import { Schema, model } from 'mongoose'
 
 // Interface
-export interface IAppointment {
+export type Appointment = {
   user_id: string,
   request_id: string,
   dentist_id: string,
@@ -13,7 +13,7 @@ export interface IAppointment {
 }
 
 // Schema
-export const appointmentSchema = new Schema<IAppointment>({
+export const appointmentSchema = new Schema<Appointment>({
   user_id: { type: String, required: true},
   request_id: { type: String, required: true},
   dentist_id: { type: String, required: true},
@@ -27,4 +27,4 @@ export const appointmentSchema = new Schema<IAppointment>({
   }
 })
 
-export default model<IAppointment>('appointment', appointmentSchema)
+export default model<Appointment>('appointment', appointmentSchema)
