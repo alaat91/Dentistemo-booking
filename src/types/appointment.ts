@@ -2,7 +2,7 @@
 import { Schema, model } from 'mongoose'
 
 // Interface
-export type Appointment = {
+export interface Appointment {
   user_id: string,
   request_id: string,
   dentist_id: string,
