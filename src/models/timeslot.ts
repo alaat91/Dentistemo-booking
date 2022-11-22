@@ -1,9 +1,22 @@
 /** startdate: Date, enddate: Date */
-import { Schema } from 'mongoose'
+import { Document, Schema, model } from 'mongoose'
 
-const timeslotSchema = new Schema({
-    start_date: Date,
-    end_date:Date,
+// Interface
+export interface Timeslot extends Document {
+   start_date: Date,
+    end_date: Date
+  
+  }
+
+
+export const timeslotSchema = new Schema({
+    start_date: {type:Date,required:true}
+    end_date:{type:Date,required:true}
 })
 
-module.exports = mongoose.model('clinic', appointmentSchema)
+export default model<Timeslot>('timeslot', timeslotSchema)
+
+
+
+
+

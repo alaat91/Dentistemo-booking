@@ -14,3 +14,12 @@ const appointmentSchema = new Schema({
 })
 
 module.exports = mongoose.model('appointment', appointmentSchema)
+
+
+
+
+
+
+
+
+
