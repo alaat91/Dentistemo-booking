@@ -1,5 +1,4 @@
-
-import Clinic = require('../models/clinic')
+// import Clinic = require('../models/clinic')
 
 /** getId
 getName 
@@ -14,9 +13,8 @@ addDentist
 removeDentist
 setAddress
 setCity
- */
+*/
 
 exports.getId = () => {
-    
-
+  return null
 }

@@ -1,4 +1,4 @@
-import Timeslot = require('../models/timeslot')
+// import Timeslot = require('../models/timeslot')
 
 /** getStartDate
 getEndDate
