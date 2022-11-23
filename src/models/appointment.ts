@@ -1,4 +1,4 @@
-import { Appointment } from "../interfaces/appointment.interface"
+import { Appointment } from "../interfaces/appointment"
 import { model, Schema } from 'mongoose'
 
 // The Appointment Schema
