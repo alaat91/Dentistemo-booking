@@ -26,7 +26,7 @@ client.on('connect', () => {
       client.publish('test', 'Hello mqtt')
     }
   })
-
+  // Published content include stringified JSON
   client.subscribe('bookings/#', {qos : 0}, (err) => {
     if (!err) {
       // Do something
