@@ -1,7 +1,9 @@
 import Appointment from "../models/appointment"
 
-// Creates appointment from request
-export function create() {
+/**
+* Creates one appointment to database.
+*/
+export const create = () => {
   const app = new Appointment()
   app.save((err, result) => {
     if (err) {
@@ -13,23 +15,48 @@ export function create() {
   })
 }
 
-// Get appointment from ID
-export function get(userId: string) {
-  Appointment.findOne({user_id: userId}, null, (err, appointment) => {
+
+/**
+* Gets all appointment entries from database.
+*/
+export const get = (userId: string) => {
+  Appointment.find({user_id: userId}, {new: true}, (err, appointments) => {
     if (err) {
       // Handle error
       return
     }
-    if (!appointment) {
+    if (!appointments) {
       // Found no appointments
       return
     }
-    return appointment
+    return appointments
   })
 }
 
-// Change appointment booking time from request
-export function changeTime(userId: string, date: Date) {
+/**
+* Gets all appointment entries from database.
+*/
+export const getHistory = (userId: string) => {
+  Appointment.find({user_id: userId, date: {
+    $lt: new Date()
+  }}, null, (err, appointments) => {
+    // Hello?
+    if (err) {
+      // Handle error
+      return
+    }
+    if (!appointments) {
+      // Found no appointments
+      return
+    }
+    return appointments
+  })
+}
+
+/**
+* Change appointment booking time from request to database.
+*/
+export const changeTime = (userId: string, date: Date) => {
   Appointment.findOneAndUpdate({user_id: userId}, {date: date}, {new: true}, (err, appointment) => {
     if (err) {
       // Handle error
