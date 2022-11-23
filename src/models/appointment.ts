@@ -6,7 +6,7 @@ export const appointmentSchema = new Schema<Appointment>({
   user_id: { type: String, required: true},
   request_id: { type: String, required: true},
   dentist_id: { type: String, required: true},
-  issuance: { type: Number, required: true},
+  issuance: { type: Number, default: Date.now(), required: true},
   date: { type: Date, required: true},
   /*
   treatment: { 
