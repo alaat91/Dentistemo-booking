@@ -1,10 +1,11 @@
 // Interface for Appointment
-export interface IAppointment {
+export interface Appointment {
   user_id: string,
   request_id: string,
   dentist_id: string,
-  issuance: boolean,
+  issuance: number,
   date: Date,
-  price: number,
+  /*
   treatment: string
+  */
 }
