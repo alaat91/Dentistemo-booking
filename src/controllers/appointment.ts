@@ -17,10 +17,29 @@ export const create = () => {
 
 
 /**
-* Gets all appointment entries from database.
+* Gets all appointment entries on one user from database.
 */
-export const get = (userId: string) => {
+export const getAppointmentsFromUserId = (userId: string) => {
   Appointment.find({user_id: userId}, {new: true}, (err, appointments) => {
+    if (err) {
+      // Handle error
+      return
+    }
+    if (!appointments) {
+      // Found no appointments
+      return
+    }
+    return appointments
+  })
+}
+
+/**
+* Gets allf uture appointment entries on one user from database.
+*/
+export const getUpcomingAppointmentsFromUserId = (userId: string) => {
+  Appointment.find({user_id: userId, date: {
+    $gt: new Date()
+  }}, {new: true}, (err, appointments) => {
     if (err) {
       // Handle error
       return
@@ -36,7 +55,24 @@ export const get = (userId: string) => {
 /**
 * Gets all appointment entries from database.
 */
-export const getHistory = (userId: string) => {
+export const getAllAppointments = () => {
+  Appointment.find({}, {new: true}, (err, appointments) => {
+    if (err) {
+      // Handle error
+      return
+    }
+    if (!appointments) {
+      // Found no appointments
+      return
+    }
+    return appointments
+  })
+}
+
+/**
+* Gets appointment history on one user from database.
+*/
+export const getAppointmentHistory = (userId: string) => {
   Appointment.find({user_id: userId, date: {
     $lt: new Date()
   }}, null, (err, appointments) => {
