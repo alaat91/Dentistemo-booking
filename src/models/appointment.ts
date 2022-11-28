@@ -1,19 +1,23 @@
+import { Appointment } from "../interfaces/appointment"
+import { model, Schema } from 'mongoose'
 
-/**userid:  String, requestid: String , dentistid: String , issuance: boolean, date: Date, price: float, 
- * treatment: String/Enum */
-import mongoose, { Schema } from 'mongoose'
-
-const appointmentSchema = new Schema({
-  user_id: String,
-  request_id: String,
-  dentist_id: String,
-  issuance: Boolean,
-  date: Date,
-  price: Number,
-  treatment: String
+// The Appointment Schema
+export const appointmentSchema = new Schema<Appointment>({
+  user_id: { type: String, required: true},
+  request_id: { type: String, required: true},
+  dentist_id: { type: String, required: true},
+  issuance: { type: Number, default: Date.now(), required: true},
+  date: { type: Date, required: true},
+  /*
+  treatment: { 
+    type: String,
+    required: true,
+    enum: ["null"]
+  }
+  */
 })
 
-module.exports = mongoose.model('appointment', appointmentSchema)
+export default model<Appointment>('Appointment', appointmentSchema)
 
 
 

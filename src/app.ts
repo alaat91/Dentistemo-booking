@@ -2,6 +2,7 @@ import mqtt, { MqttClient } from 'mqtt'
 import * as dotenv from 'dotenv'
 // import express, { Express, Request, Response } from 'express'
 import { connect, CallbackError } from 'mongoose'
+
 dotenv.config()
 
 const mongoURI: string = process.env.MONGODB_URI as string || 'mongodb://localhost:27017/dentistimo'
@@ -20,9 +21,15 @@ connect(mongoURI, (err: CallbackError) => {
 
 // Publishes
 client.on('connect', () => {
-  client.subscribe('test', (err: Error) => {
+  client.subscribe('test', {qos : 0}, (err) => {
     if (!err) {
       client.publish('test', 'Hello mqtt')
+    }
+  })
+  // Published content include stringified JSON
+  client.subscribe('bookings/#', {qos : 0}, (err) => {
+    if (!err) {
+      // Do something
     }
   })
 })
