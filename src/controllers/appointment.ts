@@ -3,7 +3,7 @@ import Appointment from "../models/appointment"
 /**
 * Creates one appointment to database.
 */
-export const create = () => {
+export const createAppointment = () => {
   const app = new Appointment()
   app.save((err, result) => {
     if (err) {
@@ -93,7 +93,9 @@ export const getAppointmentHistory = (userId: string) => {
 * Change appointment booking time from request to database.
 */
 export const changeTime = (userId: string, date: Date) => {
-  Appointment.findOneAndUpdate({user_id: userId}, {date: date}, {new: true}, (err, appointment) => {
+  Appointment.findOneAndUpdate({user_id: userId, date: {
+    $gt: new Date()
+  }}, {date: date}, {new: true}, (err, appointment) => {
     if (err) {
       // Handle error
       return
