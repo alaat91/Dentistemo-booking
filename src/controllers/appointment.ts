@@ -71,26 +71,6 @@ export const getAllAppointments = () => {
 }
 
 /**
-* Returns full appointment history from database.
-*/
-export const getAppointmentHistory = () => {
-  Appointment.find({date: {
-    $lt: new Date()
-  }}, null, (err, appointments) => {
-    // Hello?
-    if (err) {
-      // Handle error
-      return
-    }
-    if (!appointments) {
-      // Found no appointments
-      return
-    }
-    return appointments
-  })
-}
-
-/**
 * Returns appointment history on one user from database.
 */
 export const getAppointmentHistoryFromUserId = (userId: string) => {
