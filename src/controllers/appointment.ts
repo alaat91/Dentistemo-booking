@@ -18,7 +18,7 @@ export const createAppointment = (appointmentInfo: IAppointment) => {
 
 
 /**
-* Gets all appointment entries on one user from database.
+* Returns all appointment entries on one user from database.
 */
 export const getAppointmentsFromUserId = (userId: string) => {
   Appointment.find({user_id: userId}, {new: true}, (err, appointments) => {
@@ -35,7 +35,7 @@ export const getAppointmentsFromUserId = (userId: string) => {
 }
 
 /**
-* Gets allf uture appointment entries on one user from database.
+* Returns all future appointment entries on one user from database.
 */
 export const getUpcomingAppointmentsFromUserId = (userId: string) => {
   Appointment.find({user_id: userId, date: {
@@ -54,7 +54,7 @@ export const getUpcomingAppointmentsFromUserId = (userId: string) => {
 }
 
 /**
-* Gets all appointment entries from database.
+* Returns all appointment entries from database.
 */
 export const getAllAppointments = () => {
   Appointment.find({}, {new: true}, (err, appointments) => {
@@ -71,9 +71,29 @@ export const getAllAppointments = () => {
 }
 
 /**
-* Gets appointment history on one user from database.
+* Returns full appointment history from database.
 */
-export const getAppointmentHistory = (userId: string) => {
+export const getAppointmentHistory = () => {
+  Appointment.find({date: {
+    $lt: new Date()
+  }}, null, (err, appointments) => {
+    // Hello?
+    if (err) {
+      // Handle error
+      return
+    }
+    if (!appointments) {
+      // Found no appointments
+      return
+    }
+    return appointments
+  })
+}
+
+/**
+* Returns appointment history on one user from database.
+*/
+export const getAppointmentHistoryFromUserId = (userId: string) => {
   Appointment.find({user_id: userId, date: {
     $lt: new Date()
   }}, null, (err, appointments) => {
@@ -91,7 +111,7 @@ export const getAppointmentHistory = (userId: string) => {
 }
 
 /**
-* Change appointment booking time from request to database.
+* Update appointment booking time from request to database.
 */
 export const updateAppointmentTime = (userId: string, date: Date) => {
   Appointment.findOneAndUpdate({user_id: userId, date: {
