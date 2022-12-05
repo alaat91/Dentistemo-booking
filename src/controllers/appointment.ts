@@ -1,10 +1,11 @@
+import { Appointment as IAppointment } from "../interfaces/appointment"
 import Appointment from "../models/appointment"
 
 /**
 * Creates one appointment to database.
 */
-export const createAppointment = () => {
-  const appointment = new Appointment()
+export const createAppointment = (appointmentInfo: IAppointment) => {
+  const appointment = new Appointment(appointmentInfo)
   appointment.save((err, result) => {
     if (err) {
       // Handle error
