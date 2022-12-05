@@ -1,9 +1,7 @@
-import Timeslot = require('../models/timeslot')
-
 /**
 * Creates a timeslot object
 */
-export const createTimeSlot = (startDate: Date, endDate: Date) => {
+export const createTimeSlot = (/* startDate: Date, endDate: Date */) => {
   return
 }
 
