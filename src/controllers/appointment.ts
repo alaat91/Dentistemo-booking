@@ -92,9 +92,9 @@ export const getAppointmentHistory = (userId: string) => {
 /**
 * Change appointment booking time from request to database.
 */
-export const changeTime = (userId: string, date: Date) => {
+export const updateAppointmentTime = (userId: string, date: Date) => {
   Appointment.findOneAndUpdate({user_id: userId, date: {
-    $gt: new Date()
+    $gt: new Date(Date.now() + 86400000)
   }}, {date: date}, {new: true}, (err, appointment) => {
     if (err) {
       // Handle error
