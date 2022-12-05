@@ -4,8 +4,8 @@ import Appointment from "../models/appointment"
 * Creates one appointment to database.
 */
 export const createAppointment = () => {
-  const app = new Appointment()
-  app.save((err, result) => {
+  const appointment = new Appointment()
+  appointment.save((err, result) => {
     if (err) {
       // Handle error
       return
