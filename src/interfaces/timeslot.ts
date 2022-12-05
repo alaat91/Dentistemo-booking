@@ -1,5 +1,5 @@
 // Interface
-export interface Timeslot extends Document {
+export interface Timeslot {
   start_date: Date,
   end_date: Date,
 }
