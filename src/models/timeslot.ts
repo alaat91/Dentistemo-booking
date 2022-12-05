@@ -1,16 +1,11 @@
-/** startdate: Date, enddate: Date */
-import { Document, Schema, model } from 'mongoose'
+import { Timeslot } from "../interfaces/timeslot"
+import { model, Schema } from 'mongoose'
 
-// Interface
-export interface Timeslot extends Document {
-  start_date: Date,
-  end_date: Date,
-}
-
-
-export const timeslotSchema = new Schema({
-  start_date: {type: Date, required:true},
-  end_date: {type: Date, required:true}
+// Timeslot Schema
+// TODO: Validate dates that start_date do not exceed end_date, and vice versa
+export const timeslotSchema = new Schema<Timeslot>({
+  start_date: {type: Date, required: true},
+  end_date: {type: Date, required: true}
 })
 
 export default model<Timeslot>('timeslot', timeslotSchema)
