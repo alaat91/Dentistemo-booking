@@ -28,9 +28,11 @@ client.on('connect', () => {
   })
   // Published content include stringified JSON
   client.subscribe('bookings/#', {qos : 0}, (err) => {
-    if (!err) {
-      // Do something
+    if (err) {
+      // TODO: Handle errors
     }
+
+    // Add things here
   })
 })
 
