@@ -1,4 +1,4 @@
-// import { assert } from 'chai'
+import { assert } from 'chai'
 
 /*
 * This section of unit tests is for creating appointments.
@@ -7,24 +7,20 @@
 describe('Create appointments for user', () => {
   describe('createAppointment(), no parameters', () => {
     it('should return an error on', () => {
-      // TODO: Assert
-      return false
+      assert.isTrue(true, "Placeholder failed!?")
     })
   }),
   describe('createAppointment(), with invalid parameters', () => {
     it('should X', () => {
-      // TODO: Assert
-      return false
+      assert.isTrue(true, "Placeholder failed!?")
     }),
     it('should Y', () => {
-      // TODO: Assert
-      return false
+      assert.isTrue(true, "Placeholder failed!?")
     })
   }),
   describe('createAppointment(), with valid parameters', () => {
     it('should X', () => {
-      // TODO: Assert
-      return false
+      assert.isTrue(true, "Placeholder failed!?")
     })
   })
 })
@@ -35,8 +31,8 @@ describe('Create appointments for user', () => {
 describe('Getting appointments from one user', () => {
   describe('getAppointmentsFromUserId(), no parameters', () => {
     it('should return an error on', () => {
-      // TODO: Assert
-      return false
+
+      assert.isTrue(true, "Placeholder failed!?")
     })
   })
 })
@@ -47,8 +43,7 @@ describe('Getting appointments from one user', () => {
 describe('Getting upcoming appointments from one user', () => {
   describe('getUpcomingAppointmentsFromUserId(), no parameters', () => {
     it('should return an error on', () => {
-      // TODO: Assert
-      return false
+      assert.isTrue(true, "Placeholder failed!?")
     })
   })
 })
@@ -59,8 +54,7 @@ describe('Getting upcoming appointments from one user', () => {
 describe('Getting all historic appointments from one user', () => {
   describe('getAppointmentHistoryFromUserId(), no parameters', () => {
     it('should return an error on', () => {
-      // TODO: Assert
-      return false
+      assert.isTrue(true, "Placeholder failed!?")
     })
   })
 })
@@ -71,8 +65,7 @@ describe('Getting all historic appointments from one user', () => {
 describe('Getting all booked appointments', () => {
   describe('getAllAppointments(), no parameters', () => {
     it('should return an error on', () => {
-      // TODO: Assert
-      return false
+      assert.isTrue(true, "Placeholder failed!?")
     })
   })
 })
@@ -83,8 +76,7 @@ describe('Getting all booked appointments', () => {
 describe('Updating appointment time on existing appointment', () => {
   describe('updateAppointmentTime(), no parameters', () => {
     it('should return an error on', () => {
-      // TODO: Assert
-      return false
+      assert.isTrue(true, "Placeholder failed!?")
     })
   })
 })
