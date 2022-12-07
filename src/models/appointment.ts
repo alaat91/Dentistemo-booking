@@ -1,8 +1,8 @@
-import { Appointment } from "../interfaces/appointment"
+import { IAppointment } from "../interfaces/appointment"
 import { model, Schema } from 'mongoose'
 
 // The Appointment Schema
-export const appointmentSchema = new Schema<Appointment>({
+export const appointmentSchema = new Schema<IAppointment>({
   user_id: { type: String, required: true},
   request_id: { type: String, required: true},
   dentist_id: { type: String, required: true},
@@ -17,7 +17,7 @@ export const appointmentSchema = new Schema<Appointment>({
   */
 })
 
-export default model<Appointment>('Appointment', appointmentSchema)
+export default model<IAppointment>('Appointment', appointmentSchema)
 
 
 

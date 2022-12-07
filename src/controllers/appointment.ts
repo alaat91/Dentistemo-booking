@@ -1,4 +1,4 @@
-import { Appointment as IAppointment } from "../interfaces/appointment"
+import { IAppointment } from "../interfaces/appointment"
 import Appointment from "../models/appointment"
 
 /**
