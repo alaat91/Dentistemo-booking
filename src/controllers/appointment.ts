@@ -4,7 +4,7 @@ import Appointment from "../models/appointment"
 /**
 * Creates one appointment to database.
 */
-export const createAppointment = (appointmentInfo: IAppointment) => {
+async function createAppointment(appointmentInfo: IAppointment) {
   const appointment = new Appointment(appointmentInfo)
   appointment.save((err, result) => {
     if (err) {
@@ -20,7 +20,7 @@ export const createAppointment = (appointmentInfo: IAppointment) => {
 /**
 * Returns all appointment entries on one user from database.
 */
-export const getAppointmentsFromUserId = (userId: string) => {
+async function getAppointmentsFromUserId(userId: string) {
   Appointment.find({user_id: userId}, {new: true}, (err, appointments) => {
     if (err) {
       // Handle error
@@ -37,7 +37,7 @@ export const getAppointmentsFromUserId = (userId: string) => {
 /**
 * Returns all future appointment entries on one user from database.
 */
-export const getUpcomingAppointmentsFromUserId = (userId: string) => {
+async function getUpcomingAppointmentsFromUserId(userId: string) {
   Appointment.find({user_id: userId, date: {
     $gt: new Date()
   }}, {new: true}, (err, appointments) => {
@@ -54,10 +54,10 @@ export const getUpcomingAppointmentsFromUserId = (userId: string) => {
 }
 
 /**
-* Returns all appointment entries from database.
+* Returns all appointment entries from one clinic.
 */
-export const getAllAppointments = () => {
-  Appointment.find({}, {new: true}, (err, appointments) => {
+async function getAllAppointmentsFromClinic(clinicId: string) {
+  Appointment.find({dentist_id: clinicId}, {new: true}, (err, appointments) => {
     if (err) {
       // Handle error
       return
@@ -73,7 +73,7 @@ export const getAllAppointments = () => {
 /**
 * Returns appointment history on one user from database.
 */
-export const getAppointmentHistoryFromUserId = (userId: string) => {
+async function getAppointmentHistoryFromUserId(userId: string) {
   Appointment.find({user_id: userId, date: {
     $lt: new Date()
   }}, null, (err, appointments) => {
@@ -93,7 +93,7 @@ export const getAppointmentHistoryFromUserId = (userId: string) => {
 /**
 * Update appointment booking time from request to database.
 */
-export const updateAppointmentTime = (userId: string, date: Date) => {
+async function updateAppointmentTime(userId: string, date: Date): Promise<undefined> {
   Appointment.findOneAndUpdate({user_id: userId, date: {
     $gt: new Date(Date.now() + 86400000)
   }}, {date: date}, {new: true}, (err, appointment) => {
@@ -111,3 +111,5 @@ export const updateAppointmentTime = (userId: string, date: Date) => {
   })
   return
 }
+
+export default {createAppointment, getAllAppointmentsFromClinic, getAppointmentHistoryFromUserId, getAppointmentsFromUserId, getUpcomingAppointmentsFromUserId, updateAppointmentTime}
