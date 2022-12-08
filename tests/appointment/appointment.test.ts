@@ -31,7 +31,6 @@ describe('Create appointments for user', () => {
 describe('Getting appointments from one user', () => {
   describe('getAppointmentsFromUserId(), no parameters', () => {
     it('should return an error on', () => {
-
       assert.isTrue(true, "Placeholder failed!?")
     })
   })
