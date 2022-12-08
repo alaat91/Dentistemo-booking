@@ -1,20 +1,27 @@
+import { ReadonlyITimeslot } from "../interfaces/timeslot"
+
 /**
-* Creates a timeslot object
+* Creates a timeslot object.
 */
-export const createTimeSlot = (/* startDate: Date, endDate: Date */) => {
-  return
+async function createTimeSlot(startDate: Date, endDate: Date): Promise<ReadonlyITimeslot> {
+  return {
+    start_date: startDate,
+    end_date: endDate,
+  }
 }
 
 /**
-* Returns the start date of timeslot
+* Returns the start date of timeslot.
 */
-export const getStartDate = () => {
-  return
+async function getStartDate(timeslot: ReadonlyITimeslot): Promise<Date> {
+  return timeslot.start_date
 }
 
 /**
-* Returns the end date of timeslot
+* Returns the end date of timeslot.
 */
-export const getEndDate = () => {
-  return
+async function getEndDate(timeslot: ReadonlyITimeslot): Promise<Date> {
+  return timeslot.end_date
 }
+
+export default {createTimeSlot, getStartDate, getEndDate}
