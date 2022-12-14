@@ -1,17 +1,18 @@
+import { start } from "repl"
 import { ReadonlyITimeslot } from "../interfaces/timeslot"
 
 /**
  * 
  * Creates a timeslot object.
  * @param {Date} startDate Starting date of timeslot.
- * @param {Date} endDate Ending date of timeslot.
+ * @param {number} length Length of timeslot.
  * @returns {ReadonlyITimeslot} Timeslot object containing start and end date.
  *
  */
-async function createTimeSlot(startDate: Date, endDate: Date): Promise<ReadonlyITimeslot> {
+async function createTimeSlot(startDate: Date, length: number): Promise<ReadonlyITimeslot> {
   return {
     start_date: startDate,
-    end_date: endDate,
+    end_date: new Date(startDate.getTime() + length),
   }
 }
 
