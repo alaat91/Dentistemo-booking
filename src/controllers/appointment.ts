@@ -10,24 +10,17 @@ import Appointment from "../models/appointment"
  */
 async function createAppointment(message: string): Promise<string | IAppointment> {
   const appointmentInfo = JSON.parse(message)
-  const { userId, requestId, clinicId, bookedDateTime } = appointmentInfo
-  const requests = Appointment.find({request_id: requestId}) 
+  const { userId, requestId, clinicId, date } = appointmentInfo
+  
+  const requests = await Appointment.find({request_id: requestId})
 
-  if ((await requests).length > 0)
+  if (requests.length > 0) {
     return 'Duplicate request found'
+  }
 
-  const appointment = new Appointment({user_id: userId, request_id: requestId, clinic_id: clinicId, issuance: Date.now(), date: new Date(bookedDateTime)})
-  appointment.save((err, result) => {
-    if (err) {
-      // Handle error
-      return ''
-    }
-
-    return result
-  })
-  return ''
+  const appointment = new Appointment({user_id: userId, request_id: requestId, clinic_id: clinicId, issuance: Date.now(), date: new Date(date)})
+  return await appointment.save()
 }
-
 
 /**
  * 
@@ -37,17 +30,7 @@ async function createAppointment(message: string): Promise<string | IAppointment
  * 
  */
 async function getAppointmentsFromUserId(userId: string) {
-  Appointment.find({user_id: userId}, {new: true}, (err, appointments) => {
-    if (err) {
-      // Handle error
-      return
-    }
-    if (!appointments) {
-      // Found no appointments
-      return
-    }
-    return appointments
-  })
+  return await Appointment.find({user_id: userId}, {new: true})
 }
 
 /**
@@ -58,19 +41,9 @@ async function getAppointmentsFromUserId(userId: string) {
  * 
  */
 async function getUpcomingAppointmentsFromUserId(userId: string) {
-  Appointment.find({user_id: userId, date: {
+  return await Appointment.find({user_id: userId, date: {
     $gt: new Date()
-  }}, {new: true}, (err, appointments) => {
-    if (err) {
-      // Handle error
-      return
-    }
-    if (!appointments) {
-      // Found no appointments
-      return
-    }
-    return appointments
-  })
+  }}, {new: true})
 }
 
 /**
@@ -83,19 +56,9 @@ async function getUpcomingAppointmentsFromUserId(userId: string) {
  * 
  */
 async function getAllAppointmentsFromClinic(clinicId: string, startDate?: Date, endDate?: Date) {
-  Appointment.find({dentist_id: clinicId, date: {
+  return await Appointment.find({dentist_id: clinicId, date: {
     $gt: startDate || null, $lt: endDate || null
-  }}, {new: true}, (err, appointments) => {
-    if (err) {
-      // Handle error
-      return
-    }
-    if (!appointments) {
-      // Found no appointments
-      return
-    }
-    return appointments
-  })
+  }}, {new: true})
 }
 
 /**
@@ -107,21 +70,9 @@ async function getAllAppointmentsFromClinic(clinicId: string, startDate?: Date, 
  * 
  */
 async function getAppointmentsBetweenDates(startDate: Date, endDate: Date) {
-  Appointment.find({date: {
+  return await Appointment.find({date: {
     $gt: startDate, $lt: endDate
-  }}, null, (err, appointments) => {
-    // Hello?
-    if (err) {
-      // Handle error
-      return
-    }
-    if (!appointments) {
-      // Found no appointments
-      return
-    }
-    return appointments
-  })
-  return
+  }})
 }
 
 /**
@@ -132,20 +83,9 @@ async function getAppointmentsBetweenDates(startDate: Date, endDate: Date) {
  * 
  */
 async function getAppointmentHistoryFromUserId(userId: string) {
-  Appointment.find({user_id: userId, date: {
+  return await Appointment.find({user_id: userId, date: {
     $lt: new Date()
-  }}, null, (err, appointments) => {
-    // Hello?
-    if (err) {
-      // Handle error
-      return
-    }
-    if (!appointments) {
-      // Found no appointments
-      return
-    }
-    return appointments
-  })
+  }})
 }
 
 /**
@@ -156,23 +96,10 @@ async function getAppointmentHistoryFromUserId(userId: string) {
  * @returns
  * 
  */
-async function updateAppointmentTime(userId: string, date: Date): Promise<undefined> {
-  Appointment.findOneAndUpdate({user_id: userId, date: {
+async function updateAppointmentTime(userId: string, date: Date): Promise<null | undefined> {
+  return await Appointment.findOneAndUpdate({user_id: userId, date: {
     $gt: new Date(Date.now() + 86400000)
-  }}, {date: date}, {new: true}, (err, appointment) => {
-    if (err) {
-      // Handle error
-      return
-    }
-
-    if (!appointment) {
-      // Found no appointments
-      return
-    }
-
-    return appointment
-  })
-  return
+  }}, {date: date}, {new: true})
 }
 
 export default {createAppointment, getAllAppointmentsFromClinic, getAppointmentHistoryFromUserId, getAppointmentsFromUserId, getUpcomingAppointmentsFromUserId, getAppointmentsBetweenDates, updateAppointmentTime}

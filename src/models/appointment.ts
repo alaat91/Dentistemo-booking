@@ -18,12 +18,3 @@ export const appointmentSchema = new Schema<IAppointment>({
 })
 
 export default model<IAppointment>('Appointment', appointmentSchema)
-
-
-
-
-
-
-
-
-
