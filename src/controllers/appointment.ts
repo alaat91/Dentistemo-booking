@@ -2,11 +2,15 @@ import { IAppointment } from "../interfaces/appointment"
 import Appointment from "../models/appointment"
 
 /**
-* Creates one appointment to database.
-*/
+ * 
+ * Creates one appointment to database.
+ * @param {string} message Inbound MQTT payload message
+ * @returns {Promise<string | IAppointment>} Promise of the return containing another message or appointment object
+ * 
+ */
 async function createAppointment(message: string): Promise<string | IAppointment> {
   const appointmentInfo = JSON.parse(message)
-  const { userId, requestId, clinicId, bookedDateTime} = appointmentInfo
+  const { userId, requestId, clinicId, bookedDateTime } = appointmentInfo
   const requests = Appointment.find({request_id: requestId}) 
 
   if ((await requests).length > 0)
@@ -26,8 +30,12 @@ async function createAppointment(message: string): Promise<string | IAppointment
 
 
 /**
-* Returns all appointment entries on one user from database.
-*/
+ * 
+ * Returns all appointment entries on one user from database.
+ * @param {string} userId Target user ID for appointments
+ * @returns An array of appointment entries?
+ * 
+ */
 async function getAppointmentsFromUserId(userId: string) {
   Appointment.find({user_id: userId}, {new: true}, (err, appointments) => {
     if (err) {
@@ -43,8 +51,12 @@ async function getAppointmentsFromUserId(userId: string) {
 }
 
 /**
-* Returns all future appointment entries on one user from database.
-*/
+ * 
+ * Returns all future appointment entries on one user from database.
+ * @param {string} userId Target user ID for appointments
+ * @returns An array of appointment entries?
+ * 
+ */
 async function getUpcomingAppointmentsFromUserId(userId: string) {
   Appointment.find({user_id: userId, date: {
     $gt: new Date()
@@ -62,8 +74,12 @@ async function getUpcomingAppointmentsFromUserId(userId: string) {
 }
 
 /**
-* Returns all appointment entries from one clinic.
-*/
+ * 
+ * Returns all appointment entries from one clinic.
+ * @param {string} clinicId Target clinic ID for appointments
+ * @returns An array of appointment entries?
+ * 
+ */
 async function getAllAppointmentsFromClinic(clinicId: string) {
   Appointment.find({dentist_id: clinicId}, {new: true}, (err, appointments) => {
     if (err) {
@@ -79,8 +95,38 @@ async function getAllAppointmentsFromClinic(clinicId: string) {
 }
 
 /**
-* Returns appointment history on one user from database.
-*/
+ * 
+ * Returns appointments between two dates.
+ * @param {Date} startDate Starting date of checking.
+ * @param {Date} endDate Ending date of checking.
+ * @returns
+ * 
+ */
+async function getAppointmentsBetweenDates(startDate: Date, endDate: Date) {
+  Appointment.find({date: {
+    $gt: startDate, $lt: endDate
+  }}, null, (err, appointments) => {
+    // Hello?
+    if (err) {
+      // Handle error
+      return
+    }
+    if (!appointments) {
+      // Found no appointments
+      return
+    }
+    return appointments
+  })
+  return
+}
+
+/**
+ * 
+ * Returns appointment history on one user from database.
+ * @param {string} userId Target user ID for appointments
+ * @returns An array of appointment entries?
+ * 
+ */
 async function getAppointmentHistoryFromUserId(userId: string) {
   Appointment.find({user_id: userId, date: {
     $lt: new Date()
@@ -99,8 +145,13 @@ async function getAppointmentHistoryFromUserId(userId: string) {
 }
 
 /**
-* Update appointment booking time from request to database.
-*/
+ * 
+ * Update appointment booking time from request to database.
+ * @param {string} userId Target user ID for appointments.
+ * @param {Date} date New date to update appointment to.
+ * @returns
+ * 
+ */
 async function updateAppointmentTime(userId: string, date: Date): Promise<undefined> {
   Appointment.findOneAndUpdate({user_id: userId, date: {
     $gt: new Date(Date.now() + 86400000)
@@ -120,4 +171,4 @@ async function updateAppointmentTime(userId: string, date: Date): Promise<undefi
   return
 }
 
-export default {createAppointment, getAllAppointmentsFromClinic, getAppointmentHistoryFromUserId, getAppointmentsFromUserId, getUpcomingAppointmentsFromUserId, updateAppointmentTime}
+export default {createAppointment, getAllAppointmentsFromClinic, getAppointmentHistoryFromUserId, getAppointmentsFromUserId, getUpcomingAppointmentsFromUserId, getAppointmentsBetweenDates, updateAppointmentTime}
