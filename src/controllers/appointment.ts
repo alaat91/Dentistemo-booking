@@ -4,16 +4,24 @@ import Appointment from "../models/appointment"
 /**
 * Creates one appointment to database.
 */
-async function createAppointment(appointmentInfo: IAppointment) {
-  const appointment = new Appointment(appointmentInfo)
+async function createAppointment(message: string): Promise<string | IAppointment> {
+  const appointmentInfo = JSON.parse(message)
+  const { userId, requestId, clinicId, bookedDateTime} = appointmentInfo
+  const requests = Appointment.find({request_id: requestId}) 
+
+  if ((await requests).length > 0)
+    return 'Duplicate request found'
+
+  const appointment = new Appointment({user_id: userId, request_id: requestId, clinic_id: clinicId, issuance: Date.now(), date: new Date(bookedDateTime)})
   appointment.save((err, result) => {
     if (err) {
       // Handle error
-      return
+      return ''
     }
 
     return result
   })
+  return ''
 }
 
 
