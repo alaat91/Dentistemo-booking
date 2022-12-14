@@ -1,7 +1,8 @@
 import mqtt, { MqttClient } from 'mqtt'
 import * as dotenv from 'dotenv'
 // import express, { Express, Request, Response } from 'express'
-import { connect, CallbackError } from 'mongoose'
+import appointment from './controllers/appointment'
+import mongoose, { CallbackError } from 'mongoose'
 
 dotenv.config()
 
@@ -11,7 +12,7 @@ const mqttURI: string = process.env.MQTT_URI as string
 const client: MqttClient = mqtt.connect(mqttURI)
 
 // Connect to MongoDB
-connect(mongoURI, (err: CallbackError) => {
+mongoose.connect(mongoURI, (err: CallbackError) => {
   if (err) {
     // Connection failure here
     process.exit(1)
@@ -38,14 +39,20 @@ client.on('connect', () => {
 
 client.on('message', (topic: string, message: Buffer) => {
   switch (topic) {
-    case 'test':
+    case 'bookings/test':
       // eslint-disable-next-line no-console
       console.log(message.toString())
       client.end()
       break
-    case '':
+    case 'bookings/appointment/create':
       // new topic here
-      client.end()
+      appointment.createAppointment(message.toString()).then((newAppointment) => {
+        client.publish('bookings/appointment/create', JSON.stringify(newAppointment))
+      }).then(() => {
+        client.end()
+      }).catch(() => {
+        client.publish('bookings/appointment/create', 'Woops...')
+      })
       break
     default:
       client.end()
