@@ -76,12 +76,16 @@ async function getUpcomingAppointmentsFromUserId(userId: string) {
 /**
  * 
  * Returns all appointment entries from one clinic.
- * @param {string} clinicId Target clinic ID for appointments
+ * @param {string} clinicId Target clinic ID for appointments.
+ * @param {Date} startDate Starting date of filter.
+ * @param {Date} endDate Ending date of filter.
  * @returns An array of appointment entries?
  * 
  */
-async function getAllAppointmentsFromClinic(clinicId: string) {
-  Appointment.find({dentist_id: clinicId}, {new: true}, (err, appointments) => {
+async function getAllAppointmentsFromClinic(clinicId: string, startDate?: Date, endDate?: Date) {
+  Appointment.find({dentist_id: clinicId, date: {
+    $gt: startDate || null, $lt: endDate || null
+  }}, {new: true}, (err, appointments) => {
     if (err) {
       // Handle error
       return
