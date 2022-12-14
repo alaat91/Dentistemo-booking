@@ -18,14 +18,6 @@ async function createTimeSlot(startDate: Date, length: number): Promise<Readonly
 
 /**
  * 
- * @param timeslot 
- * @returns 
- * 
- */
-
-
-/**
- * 
  * Returns the start date of timeslot.
  * @param {ReadonlyITimeslot} timeslot Timeslot object.
  * @returns {Date} Starting date of timeslot.
