@@ -7,6 +7,8 @@ import { IAppointment } from '../src/interfaces/appointment'
 
 let mongod: MongoMemoryServer
 
+mocha.timeout(6000)
+
 function randomId(length: number): string {
   let result = ''
   const characters = '0123456789abcdef'
