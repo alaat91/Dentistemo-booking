@@ -8,8 +8,6 @@ diff: true
 exit: false
 
 growl: false
-ignore:
-  - '/path/to/some/ignored/file'
 inline-diffs: false
 # needs to be used with grep or fgrep
 # invert: false
@@ -18,7 +16,7 @@ package: './package.json'
 reporter: 'spec'
 retries: 1
 spec:
-  - 'test/**/*.spec.js' # the positional arguments!
+  - 'test/**/*.spec.ts' # the positional arguments!
 timeout: '6000' # same as "timeout: '2s'"
 # timeout: false # same as "timeout: 0"
 trace-warnings: true # node flags ok
