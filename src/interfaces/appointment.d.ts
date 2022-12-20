@@ -4,7 +4,7 @@ export interface IAppointment {
   request_id: string,
   clinic_id: string,
   issuance: number,
-  date: Date,
+  date: number,
   /*
   treatment: string
   */

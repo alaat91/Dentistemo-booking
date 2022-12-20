@@ -1,12 +1,17 @@
 import mqtt, { MqttClient } from 'mqtt'
 import * as dotenv from 'dotenv'
 // import express, { Express, Request, Response } from 'express'
-import appointment from './controllers/appointment'
 import mongoose, { CallbackError } from 'mongoose'
+import {
+  createAppointment,
+  getAppointmentsWithinDateRange,
+} from './controllers/appointment'
+import { IAppointment } from './interfaces/appointment'
 
 dotenv.config()
 
-const mongoURI: string = process.env.MONGODB_URI as string || 'mongodb://localhost:27017/dentistimo'
+const mongoURI: string =
+  (process.env.MONGODB_URI as string) || 'mongodb://localhost:27017/dentistimo'
 const mqttURI: string = process.env.MQTT_URI as string
 
 const client: MqttClient = mqtt.connect(mqttURI)
@@ -22,40 +27,35 @@ mongoose.connect(mongoURI, (err: CallbackError) => {
 
 // Publishes
 client.on('connect', () => {
-  client.subscribe('test', {qos : 0}, (err) => {
-    if (!err) {
-      client.publish('test', 'Hello mqtt')
-    }
-  })
   // Published content include stringified JSON
-  client.subscribe('bookings/#', {qos : 0}, (err) => {
-    if (err) {
-      // TODO: Handle errors
-    }
-
-    // Add things here
-  })
+  client.subscribe('bookings/#', { qos: 1 })
 })
 
-client.on('message', (topic: string, message: Buffer) => {
+client.on('message', async (topic: string, message: Buffer) => {
   switch (topic) {
-    case 'bookings/test':
-      // eslint-disable-next-line no-console
-      console.log(message.toString())
-      client.end()
-      break
-    case 'bookings/appointment/create':
+    case 'bookings/new': {
+      const parsedMessage = JSON.parse(message.toString())
       // new topic here
-      appointment.createAppointment(message.toString()).then((newAppointment) => {
-        client.publish('bookings/appointment/create', JSON.stringify(newAppointment))
-      }).then(() => {
-        client.end()
-      }).catch(() => {
-        client.publish('bookings/appointment/create', 'Woops...')
-      })
+      const newAppointment = await createAppointment(
+        parsedMessage as IAppointment
+      )
+      client.publish('gateway/bookings/new', JSON.stringify(newAppointment))
       break
-    default:
-      client.end()
-      break
+    }
+    case 'bookings/get/range': {
+      try {
+        const parsedMessage = JSON.parse(message.toString())
+        const appointments = await getAppointmentsWithinDateRange(
+          parsedMessage.start,
+          parsedMessage.end
+        )
+        client.publish(
+          parsedMessage.responseTopic,
+          JSON.stringify(appointments)
+        )
+      } catch (err) {
+        // Handle error
+      }
+    }
   }
 })

@@ -1,5 +1,5 @@
-import { IAppointment } from "../interfaces/appointment"
-import Appointment from "../models/appointment"
+import { IAppointment } from '../interfaces/appointment'
+import Appointment from '../models/appointment'
 
 /**
  * 
@@ -8,18 +8,19 @@ import Appointment from "../models/appointment"
  * @returns {Promise<IAppointment>} Promise of the return containing appointment object
  * 
  */
-async function createAppointment(message: string): Promise<IAppointment> {
+async function createAppointment(appointmentInfo: IAppointment): Promise<IAppointment> {
+  // TODO: Add validation for user_id, dentist_id, issuance, date
+  // TODO: send email to user
   try {
-    const appointmentParams: IAppointment = JSON.parse(message)
-    appointmentParams.issuance = Date.now()
+    appointmentInfo.issuance = Date.now()
     
-    const requests = await Appointment.find({request_id: appointmentParams.request_id})
+    const requests = await Appointment.find({request_id: appointmentInfo.request_id})
 
     if (requests.length > 0) {
       throw 'Duplicate request found'
     }
 
-    const appointment = new Appointment(appointmentParams)
+    const appointment = new Appointment(appointmentInfo)
     return await appointment.save()
   } catch {
     throw 'Something went wrong!'
@@ -110,4 +111,35 @@ async function updateAppointmentTime(userId: string, date: Date): Promise<null |
   }}, {date: date}, {new: true})
 }
 
-export default {createAppointment, getAllAppointmentsFromClinic, getAppointmentHistoryFromUserId, getAppointmentsFromUserId, getUpcomingAppointmentsFromUserId, getAppointmentsBetweenDates, updateAppointmentTime}
+/**
+ * Get all appointments within a date range
+ * @param startDate Start date as UNIX ms timestamp
+ * @param endDate End date as UNIX ms timestamp
+ * @returns Array of appointments
+ */
+
+async function getAppointmentsWithinDateRange(startDate: number, endDate: number) {
+  try {
+    const appointments = await Appointment.find({
+      date: {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+      },
+    })
+    return appointments
+  } catch (err) {
+    // Handle error
+    return err
+  }
+}
+
+export default {
+  createAppointment, 
+  getAllAppointmentsFromClinic, 
+  getAppointmentHistoryFromUserId, 
+  getAppointmentsFromUserId, 
+  getUpcomingAppointmentsFromUserId, 
+  getAppointmentsBetweenDates, 
+  updateAppointmentTime,
+  getAppointmentsWithinDateRange
+}
