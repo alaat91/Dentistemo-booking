@@ -5,6 +5,27 @@ import { IAppointment } from '../src/interfaces/appointment'
 
 const mongoURI: string = process.env.MONGODB_URI as string || 'mongodb://localhost:27017/dentistimo'
 
+function randomId(length: number): string {
+  let result = ''
+  const characters = '0123456789abcdef'
+  const charactersLength = characters.length
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength))
+  }
+
+  return result
+}
+
+function generateRandomAppointment(presetUserId?: string | null, presetRequestId?: string | null, presetClinicId?: string | null): IAppointment {
+  return {
+    user_id: presetUserId || randomId(8),
+    request_id: presetRequestId || randomId(20),
+    clinic_id: presetClinicId || randomId(10),
+    issuance: 0,
+    date: new Date(),
+  }
+}
+
 before(() => {
   mongoose.connect(mongoURI, (err) => {
     if (err) {
@@ -16,6 +37,7 @@ before(() => {
 })
 
 after(async () => {
+  mongoose.connection.dropDatabase()
   await mongoose.connection.close()
 })
 
@@ -24,9 +46,6 @@ after(async () => {
 * Tests should attempt use invalid vs. valid parameters, expect former to error and latter to return objects.
 */
 describe('Create appointments for user', () => {
-  after(async () => {
-    mongoose.connection.dropDatabase()
-  })
   describe('createAppointment(), no parameters', () => {
     it('should return an error on', async () => {
       await appointment.createAppointment('').then((result) => {
@@ -36,6 +55,7 @@ describe('Create appointments for user', () => {
       })
     })
   })
+
   describe('createAppointment(), with invalid parameters', () => {
     it('should X', async (done) => {
       assert.isTrue(true, 'Placeholder failed!?')
@@ -46,15 +66,10 @@ describe('Create appointments for user', () => {
       done()
     })
   })
+
   describe('createAppointment(), with valid parameters', () => {
     const currentTime = Date.now()
-    const paramPreset: IAppointment = {
-      user_id: '27881266',
-      request_id: '0',
-      clinic_id: '1337',
-      issuance: 0,
-      date: new Date(),
-    }
+    const paramPreset: IAppointment = generateRandomAppointment('64')
 
     it('should create a proper appointment', async () => {  
       await appointment.createAppointment(JSON.stringify(paramPreset)).then((result) => {
@@ -79,6 +94,43 @@ describe('Getting appointments from one user', () => {
     it('should return an error on', async (done) => {
       assert.isTrue(true, 'Placeholder failed!?')
       done()
+    })
+  })
+
+  describe('getAppointmentsFromUserId(), specified user', () => {
+    it('should contain an empty list', async () => {
+      const userId = '288959'
+      await appointment.getAppointmentsFromUserId(userId).then((result) => {
+        assert.exists(result, 'Missing appointments')
+        assert.isEmpty(result, 'Mysterious appointments found')
+      })
+    })
+
+    it('should contain one appointment', async () => {
+      const userId = '288959'
+      const paramPreset: IAppointment = generateRandomAppointment(userId)
+
+      await appointment.createAppointment(JSON.stringify(paramPreset)).then(() => {
+        appointment.getAppointmentsFromUserId(userId).then((result) => {
+          assert.exists(result, 'Missing appointments')
+          assert.isNotEmpty(result, 'No appointments found')
+        })
+      })
+    })
+
+    it('should contain more than one appointment', async () => {
+      const userId = '288959'
+      const paramPreset0: IAppointment = generateRandomAppointment(userId)
+      const paramPreset1: IAppointment = generateRandomAppointment(userId)
+      
+      await appointment.createAppointment(JSON.stringify(paramPreset0))
+      await appointment.createAppointment(JSON.stringify(paramPreset1)).then(() => {
+        appointment.getAppointmentsFromUserId(userId).then((result) => {
+          assert.exists(result, 'Missing appointments')
+          assert.isNotEmpty(result, 'No appointments found')
+          assert.isAtLeast(result.length, 2, 'Only one appointment was found')
+        })
+      })
     })
   })
 })

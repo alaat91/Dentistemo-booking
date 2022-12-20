@@ -5,7 +5,7 @@ import Appointment from "../models/appointment"
  * 
  * Creates one appointment to database.
  * @param {string} message Inbound MQTT payload message
- * @returns {Promise<string | IAppointment>} Promise of the return containing another message or appointment object
+ * @returns {Promise<IAppointment>} Promise of the return containing appointment object
  * 
  */
 async function createAppointment(message: string): Promise<IAppointment> {
@@ -30,21 +30,25 @@ async function createAppointment(message: string): Promise<IAppointment> {
  * 
  * Returns all appointment entries on one user from database.
  * @param {string} userId Target user ID for appointments
- * @returns An array of appointment entries?
+ * @returns {Promise<IAppointment[]>} An array of appointment entries
  * 
  */
-async function getAppointmentsFromUserId(userId: string) {
-  return await Appointment.find({user_id: userId}, {new: true})
+async function getAppointmentsFromUserId(userId: string): Promise<IAppointment[]> {
+  return await Appointment.find({user_id: userId}, {new: true}).then((result) => {
+    return result
+  }).catch((err) => {
+    return err
+  })
 }
 
 /**
  * 
  * Returns all future appointment entries on one user from database.
  * @param {string} userId Target user ID for appointments
- * @returns An array of appointment entries?
+ * @returns {Promise<IAppointment[]>} An array of appointment entries
  * 
  */
-async function getUpcomingAppointmentsFromUserId(userId: string) {
+async function getUpcomingAppointmentsFromUserId(userId: string): Promise<IAppointment[]> {
   return await Appointment.find({user_id: userId, date: {
     $gt: new Date()
   }}, {new: true})
@@ -53,13 +57,13 @@ async function getUpcomingAppointmentsFromUserId(userId: string) {
 /**
  * 
  * Returns all appointment entries from one clinic.
- * @param {string} clinicId Target clinic ID for appointments.
- * @param {Date} startDate Starting date of filter.
- * @param {Date} endDate Ending date of filter.
- * @returns An array of appointment entries?
+ * @param {string} clinicId Target clinic ID for appointments
+ * @param {Date} startDate Starting date of filter
+ * @param {Date} endDate Ending date of filter
+ * @returns {Promise<IAppointment[]>} An array of appointment entries
  * 
  */
-async function getAllAppointmentsFromClinic(clinicId: string, startDate?: Date, endDate?: Date) {
+async function getAllAppointmentsFromClinic(clinicId: string, startDate?: Date, endDate?: Date): Promise<IAppointment[]> {
   return await Appointment.find({dentist_id: clinicId, date: {
     $gt: startDate || null, $lt: endDate || null
   }}, {new: true})
@@ -70,10 +74,10 @@ async function getAllAppointmentsFromClinic(clinicId: string, startDate?: Date, 
  * Returns appointments between two dates.
  * @param {Date} startDate Starting date of checking.
  * @param {Date} endDate Ending date of checking.
- * @returns
+ * @returns {Promise<IAppointment[]>}
  * 
  */
-async function getAppointmentsBetweenDates(startDate: Date, endDate: Date) {
+async function getAppointmentsBetweenDates(startDate: Date, endDate: Date): Promise<IAppointment[]> {
   return await Appointment.find({date: {
     $gt: startDate, $lt: endDate
   }})
@@ -83,10 +87,10 @@ async function getAppointmentsBetweenDates(startDate: Date, endDate: Date) {
  * 
  * Returns appointment history on one user from database.
  * @param {string} userId Target user ID for appointments
- * @returns An array of appointment entries?
+ * @returns {Promise<IAppointment[]>} An array of appointment entries
  * 
  */
-async function getAppointmentHistoryFromUserId(userId: string) {
+async function getAppointmentHistoryFromUserId(userId: string): Promise<IAppointment[]> {
   return await Appointment.find({user_id: userId, date: {
     $lt: new Date()
   }})
