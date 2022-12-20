@@ -8,18 +8,22 @@ import Appointment from "../models/appointment"
  * @returns {Promise<string | IAppointment>} Promise of the return containing another message or appointment object
  * 
  */
-async function createAppointment(message: string): Promise<string | IAppointment> {
-  const appointmentInfo = JSON.parse(message)
-  const { userId, requestId, clinicId, date } = appointmentInfo
-  
-  const requests = await Appointment.find({request_id: requestId})
+async function createAppointment(message: string): Promise<IAppointment> {
+  try {
+    const appointmentParams: IAppointment = JSON.parse(message)
+    appointmentParams.issuance = Date.now()
+    
+    const requests = await Appointment.find({request_id: appointmentParams.request_id})
 
-  if (requests.length > 0) {
-    return 'Duplicate request found'
+    if (requests.length > 0) {
+      throw 'Duplicate request found'
+    }
+
+    const appointment = new Appointment(appointmentParams)
+    return await appointment.save()
+  } catch {
+    throw 'Something went wrong!'
   }
-
-  const appointment = new Appointment({user_id: userId, request_id: requestId, clinic_id: clinicId, issuance: Date.now(), date: new Date(date)})
-  return await appointment.save()
 }
 
 /**
