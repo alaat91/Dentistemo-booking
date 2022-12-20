@@ -24,7 +24,7 @@ function generateRandomAppointment(presetUserId?: string | null, presetRequestId
     request_id: presetRequestId || randomId(20),
     clinic_id: presetClinicId || randomId(10),
     issuance: 0,
-    date: new Date(),
+    date: new Date().getTime(),
   }
 }
 
@@ -45,16 +45,6 @@ after(async () => {
 * Tests should attempt use invalid vs. valid parameters, expect former to error and latter to return objects.
 */
 describe('Create appointments for user', () => {
-  describe('createAppointment(), no parameters', () => {
-    it('should return an error on', async () => {
-      await appointment.createAppointment('').then((result) => {
-        assert.equal(result, null, 'Appointment generated something')
-      }).catch((result) => {
-        assert.equal(result, 'Something went wrong!', 'Appointment generated something')
-      })
-    })
-  })
-
   describe('createAppointment(), with invalid parameters', () => {
     it('should X', async (done) => {
       assert.isTrue(true, 'Placeholder failed!?')
@@ -71,7 +61,7 @@ describe('Create appointments for user', () => {
     const paramPreset: IAppointment = generateRandomAppointment('64')
 
     it('should create a proper appointment', async () => {  
-      await appointment.createAppointment(JSON.stringify(paramPreset)).then((result) => {
+      await appointment.createAppointment(paramPreset).then((result) => {
         assert.exists(result, 'Nothing was returned')
         assert.equal(result.user_id, paramPreset.user_id, 'User ID modified/mismatched')
         assert.equal(result.request_id, paramPreset.request_id, 'Request ID modified/mismatched')
@@ -109,7 +99,7 @@ describe('Getting appointments from one user', () => {
       const userId = '288959'
       const paramPreset: IAppointment = generateRandomAppointment(userId)
 
-      await appointment.createAppointment(JSON.stringify(paramPreset)).then(() => {
+      await appointment.createAppointment(paramPreset).then(() => {
         appointment.getAppointmentsFromUserId(userId).then((result) => {
           assert.exists(result, 'Missing appointments')
           assert.isNotEmpty(result, 'No appointments found')
@@ -122,8 +112,8 @@ describe('Getting appointments from one user', () => {
       const paramPreset0: IAppointment = generateRandomAppointment(userId)
       const paramPreset1: IAppointment = generateRandomAppointment(userId)
       
-      await appointment.createAppointment(JSON.stringify(paramPreset0))
-      await appointment.createAppointment(JSON.stringify(paramPreset1)).then(() => {
+      await appointment.createAppointment(paramPreset0)
+      await appointment.createAppointment(paramPreset1).then(() => {
         appointment.getAppointmentsFromUserId(userId).then((result) => {
           assert.exists(result, 'Missing appointments')
           assert.isNotEmpty(result, 'No appointments found')

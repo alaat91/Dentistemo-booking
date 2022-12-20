@@ -2,10 +2,7 @@ import mqtt, { MqttClient } from 'mqtt'
 import * as dotenv from 'dotenv'
 // import express, { Express, Request, Response } from 'express'
 import mongoose, { CallbackError } from 'mongoose'
-import {
-  createAppointment,
-  getAppointmentsWithinDateRange,
-} from './controllers/appointment'
+import appointment from './controllers/appointment'
 import { IAppointment } from './interfaces/appointment'
 
 dotenv.config()
@@ -36,7 +33,7 @@ client.on('message', async (topic: string, message: Buffer) => {
     case 'bookings/new': {
       const parsedMessage = JSON.parse(message.toString())
       // new topic here
-      const newAppointment = await createAppointment(
+      const newAppointment = await appointment.createAppointment(
         parsedMessage as IAppointment
       )
       client.publish('gateway/bookings/new', JSON.stringify(newAppointment))
@@ -45,7 +42,7 @@ client.on('message', async (topic: string, message: Buffer) => {
     case 'bookings/get/range': {
       try {
         const parsedMessage = JSON.parse(message.toString())
-        const appointments = await getAppointmentsWithinDateRange(
+        const appointments = await appointment.getAppointmentsWithinDateRange(
           parsedMessage.start,
           parsedMessage.end
         )

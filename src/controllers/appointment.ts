@@ -140,6 +140,7 @@ export default {
   getAppointmentsFromUserId, 
   getUpcomingAppointmentsFromUserId, 
   getAppointmentsBetweenDates, 
+  getAppointmentsWithinDateRange,
   updateAppointmentTime,
-  getAppointmentsWithinDateRange
+  
 }
