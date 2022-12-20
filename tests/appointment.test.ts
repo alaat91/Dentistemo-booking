@@ -1,4 +1,7 @@
 import { assert } from 'chai'
+import dropDB from './util/dropdb'
+
+require('../src/app')
 
 /*
 * This section of unit tests is for creating appointments.
@@ -79,3 +82,5 @@ describe('Updating appointment time on existing appointment', () => {
     })
   })
 })
+
+dropDB()
