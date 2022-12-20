@@ -5,7 +5,7 @@ import { model, Schema } from 'mongoose'
 export const appointmentSchema = new Schema<IAppointment>({
   user_id: { type: String, required: true},
   request_id: { type: String, required: true},
-  dentist_id: { type: String, required: true},
+  clinic_id: { type: String, required: true},
   issuance: { type: Number, default: Date.now(), required: true},
   date: { type: Number, required: true},
   /*
@@ -18,12 +18,3 @@ export const appointmentSchema = new Schema<IAppointment>({
 })
 
 export default model<IAppointment>('Appointment', appointmentSchema)
-
-
-
-
-
-
-
-
-

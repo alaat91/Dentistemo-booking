@@ -2,135 +2,113 @@ import { IAppointment } from '../interfaces/appointment'
 import Appointment from '../models/appointment'
 
 /**
+ * 
  * Creates one appointment to database.
+ * @param {string} message Inbound MQTT payload message
+ * @returns {Promise<IAppointment>} Promise of the return containing appointment object
+ * 
  */
-export const createAppointment = async (appointmentInfo: IAppointment) => {
+async function createAppointment(appointmentInfo: IAppointment): Promise<IAppointment> {
   // TODO: Add validation for user_id, dentist_id, issuance, date
   // TODO: send email to user
   try {
+    appointmentInfo.issuance = Date.now()
+    
+    const requests = await Appointment.find({request_id: appointmentInfo.request_id})
+
+    if (requests.length > 0) {
+      throw 'Duplicate request found'
+    }
+
     const appointment = new Appointment(appointmentInfo)
-    await appointment.save()
-    return appointment
-  } catch (err) {
-    return err
+    return await appointment.save()
+  } catch {
+    throw 'Something went wrong!'
   }
 }
 
 /**
+ * 
  * Returns all appointment entries on one user from database.
+ * @param {string} userId Target user ID for appointments
+ * @returns {Promise<IAppointment[]>} An array of appointment entries
+ * 
  */
-export const getAppointmentsFromUserId = (userId: string) => {
-  Appointment.find({ user_id: userId }, { new: true }, (err, appointments) => {
-    if (err) {
-      // Handle error
-      return
-    }
-    if (!appointments) {
-      // Found no appointments
-      return
-    }
-    return appointments
+async function getAppointmentsFromUserId(userId: string): Promise<IAppointment[]> {
+  return await Appointment.find({user_id: userId}, {new: true}).then((result) => {
+    return result
+  }).catch((err) => {
+    return err
   })
 }
 
 /**
+ * 
  * Returns all future appointment entries on one user from database.
+ * @param {string} userId Target user ID for appointments
+ * @returns {Promise<IAppointment[]>} An array of appointment entries
+ * 
  */
-export const getUpcomingAppointmentsFromUserId = (userId: string) => {
-  Appointment.find(
-    {
-      user_id: userId,
-      date: {
-        $gt: new Date(),
-      },
-    },
-    { new: true },
-    (err, appointments) => {
-      if (err) {
-        // Handle error
-        return
-      }
-      if (!appointments) {
-        // Found no appointments
-        return
-      }
-      return appointments
-    }
-  )
+async function getUpcomingAppointmentsFromUserId(userId: string): Promise<IAppointment[]> {
+  return await Appointment.find({user_id: userId, date: {
+    $gt: new Date()
+  }}, {new: true})
 }
 
 /**
- * Returns all appointment entries from database.
+ * 
+ * Returns all appointment entries from one clinic.
+ * @param {string} clinicId Target clinic ID for appointments
+ * @param {Date} startDate Starting date of filter
+ * @param {Date} endDate Ending date of filter
+ * @returns {Promise<IAppointment[]>} An array of appointment entries
+ * 
  */
-export const getAllAppointments = () => {
-  Appointment.find({}, { new: true }, (err, appointments) => {
-    if (err) {
-      // Handle error
-      return
-    }
-    if (!appointments) {
-      // Found no appointments
-      return
-    }
-    return appointments
-  })
+async function getAllAppointmentsFromClinic(clinicId: string, startDate?: Date, endDate?: Date): Promise<IAppointment[]> {
+  return await Appointment.find({dentist_id: clinicId, date: {
+    $gt: startDate || null, $lt: endDate || null
+  }}, {new: true})
 }
 
 /**
+ * 
+ * Returns appointments between two dates.
+ * @param {Date} startDate Starting date of checking.
+ * @param {Date} endDate Ending date of checking.
+ * @returns {Promise<IAppointment[]>}
+ * 
+ */
+async function getAppointmentsBetweenDates(startDate: Date, endDate: Date): Promise<IAppointment[]> {
+  return await Appointment.find({date: {
+    $gt: startDate, $lt: endDate
+  }})
+}
+
+/**
+ * 
  * Returns appointment history on one user from database.
+ * @param {string} userId Target user ID for appointments
+ * @returns {Promise<IAppointment[]>} An array of appointment entries
+ * 
  */
-export const getAppointmentHistoryFromUserId = (userId: string) => {
-  Appointment.find(
-    {
-      user_id: userId,
-      date: {
-        $lt: new Date(),
-      },
-    },
-    null,
-    (err, appointments) => {
-      // Hello?
-      if (err) {
-        // Handle error
-        return
-      }
-      if (!appointments) {
-        // Found no appointments
-        return
-      }
-      return appointments
-    }
-  )
+async function getAppointmentHistoryFromUserId(userId: string): Promise<IAppointment[]> {
+  return await Appointment.find({user_id: userId, date: {
+    $lt: new Date()
+  }})
 }
 
 /**
+ * 
  * Update appointment booking time from request to database.
+ * @param {string} userId Target user ID for appointments.
+ * @param {Date} date New date to update appointment to.
+ * @returns
+ * 
  */
-export const updateAppointmentTime = (userId: string, date: Date) => {
-  Appointment.findOneAndUpdate(
-    {
-      user_id: userId,
-      date: {
-        $gt: new Date(Date.now() + 86400000),
-      },
-    },
-    { date: date },
-    { new: true },
-    (err, appointment) => {
-      if (err) {
-        // Handle error
-        return
-      }
-
-      if (!appointment) {
-        // Found no appointments
-        return
-      }
-
-      return appointment
-    }
-  )
-  return
+async function updateAppointmentTime(userId: string, date: Date): Promise<null | undefined> {
+  return await Appointment.findOneAndUpdate({user_id: userId, date: {
+    $gt: new Date(Date.now() + 86400000)
+  }}, {date: date}, {new: true})
 }
 
 /**
@@ -140,10 +118,7 @@ export const updateAppointmentTime = (userId: string, date: Date) => {
  * @returns Array of appointments
  */
 
-export const getAppointmentsWithinDateRange = async (
-  startDate: number,
-  endDate: number
-) => {
+async function getAppointmentsWithinDateRange(startDate: number, endDate: number) {
   try {
     const appointments = await Appointment.find({
       date: {
@@ -156,4 +131,16 @@ export const getAppointmentsWithinDateRange = async (
     // Handle error
     return err
   }
+}
+
+export default {
+  createAppointment, 
+  getAllAppointmentsFromClinic, 
+  getAppointmentHistoryFromUserId, 
+  getAppointmentsFromUserId, 
+  getUpcomingAppointmentsFromUserId, 
+  getAppointmentsBetweenDates, 
+  getAppointmentsWithinDateRange,
+  updateAppointmentTime,
+  
 }
