@@ -28,7 +28,7 @@ function generateRandomAppointment(presetUserId?: string | null, presetRequestId
   }
 }
 
-before(async () => {
+before(async (done) => {
   mongod = await MongoMemoryServer.create()
   mongoose.connect(mongod.getUri(), {dbName: 'testAppointment'}, (err) => {
     if (err) {
@@ -37,12 +37,16 @@ before(async () => {
     }
     // Connection successful
   })
+
+  done()
 })
 
-after(async () => {
+after(async (done) => {
   await mongoose.connection.dropDatabase()
   await mongoose.connection.close()
   await mongod.stop()
+
+  done()
 })
 
 /*
