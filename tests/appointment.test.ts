@@ -1,5 +1,6 @@
 import { assert } from 'chai'
 import mongoose from 'mongoose'
+import { disconnect } from 'process'
 import appointment from '../src/controllers/appointment'
 
 const mongoURI: string = process.env.MONGODB_URI as string || 'mongodb://localhost:27017/dentistimo'
@@ -27,25 +28,30 @@ describe('Create appointments for user', async () => {
     mongoose.connection.dropDatabase()
   })
   describe('createAppointment(), no parameters', () => {
-    it('should return an error on', () => {
+    it('should return an error on', (done) => {
       appointment.createAppointment('').then((result) => {
         assert.equal(result, null, 'Appointment generated something')
+        done()
       }).catch((err) => {
         assert.equal(err, '', 'Appointment did not generate error')
+        done()
       })
     })
   })
   describe('createAppointment(), with invalid parameters', () => {
-    it('should X', () => {
+    it('should X', (done) => {
       assert.isTrue(true, 'Placeholder failed!?')
+      done()
     }),
-    it('should Y', () => {
+    it('should Y', (done) => {
       assert.isTrue(true, 'Placeholder failed!?')
+      done()
     })
   })
   describe('createAppointment(), with valid parameters', () => {
-    it('should X', () => {
+    it('should X', (done) => {
       assert.isTrue(true, 'Placeholder failed!?')
+      done()
     })
   })
 })
@@ -55,8 +61,9 @@ describe('Create appointments for user', async () => {
 */
 describe('Getting appointments from one user', async () => {
   describe('getAppointmentsFromUserId(), no parameters', () => {
-    it('should return an error on', () => {
+    it('should return an error on', (done) => {
       assert.isTrue(true, 'Placeholder failed!?')
+      done()
     })
   })
 })
@@ -66,8 +73,9 @@ describe('Getting appointments from one user', async () => {
 */
 describe('Getting upcoming appointments from one user', async () => {
   describe('getUpcomingAppointmentsFromUserId(), no parameters', () => {
-    it('should return an error on', () => {
+    it('should return an error on', (done) => {
       assert.isTrue(true, 'Placeholder failed!?')
+      done()
     })
   })
 })
@@ -77,8 +85,9 @@ describe('Getting upcoming appointments from one user', async () => {
 */
 describe('Getting all historic appointments from one user', async () => {
   describe('getAppointmentHistoryFromUserId(), no parameters', () => {
-    it('should return an error on', () => {
+    it('should return an error on', (done) => {
       assert.isTrue(true, 'Placeholder failed!?')
+      done()
     })
   })
 })
@@ -88,8 +97,9 @@ describe('Getting all historic appointments from one user', async () => {
 */
 describe('Getting all booked appointments', async () => {
   describe('getAllAppointments(), no parameters', () => {
-    it('should return an error on', () => {
+    it('should return an error on', (done) => {
       assert.isTrue(true, 'Placeholder failed!?')
+      done()
     })
   })
 })
@@ -99,8 +109,9 @@ describe('Getting all booked appointments', async () => {
 */
 describe('Updating appointment time on existing appointment', async () => {
   describe('updateAppointmentTime(), no parameters', () => {
-    it('should return an error on', () => {
+    it('should return an error on', (done) => {
       assert.isTrue(true, 'Placeholder failed!?')
+      done()
     })
   })
 })
