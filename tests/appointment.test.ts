@@ -1,9 +1,11 @@
 import { assert } from 'chai'
-import mongoose from 'mongoose'
+import mongoose, { mongo } from 'mongoose'
+import { MongoMemoryServer } from 'mongodb-memory-server'
+
 import appointment from '../src/controllers/appointment'
 import { IAppointment } from '../src/interfaces/appointment'
 
-const mongoURI: string = process.env.MONGODB_URI as string || 'mongodb://localhost:27017/dentistimo'
+let mongod: MongoMemoryServer
 
 function randomId(length: number): string {
   let result = ''
@@ -26,8 +28,9 @@ function generateRandomAppointment(presetUserId?: string | null, presetRequestId
   }
 }
 
-before(() => {
-  mongoose.connect(mongoURI, (err) => {
+before(async () => {
+  mongod = await MongoMemoryServer.create()
+  mongoose.connect(mongod.getUri(), {dbName: 'testAppointment'}, (err) => {
     if (err) {
       // Connection failure here
       process.exit(1)
@@ -37,8 +40,9 @@ before(() => {
 })
 
 after(async () => {
-  mongoose.connection.dropDatabase()
+  await mongoose.connection.dropDatabase()
   await mongoose.connection.close()
+  await mongod.stop()
 })
 
 /*
