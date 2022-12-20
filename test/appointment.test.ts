@@ -1,13 +1,11 @@
 import { assert } from 'chai'
-import mongoose, { mongo } from 'mongoose'
+import mongoose from 'mongoose'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 
 import appointment from '../src/controllers/appointment'
 import { IAppointment } from '../src/interfaces/appointment'
 
 let mongod: MongoMemoryServer
-
-mocha.timeout(6000)
 
 function randomId(length: number): string {
   let result = ''

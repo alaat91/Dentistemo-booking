@@ -7,7 +7,7 @@
     "start": "node ./dist/app.js",
     "dev": "nodemon ./src/app.ts",
     "build": "yarn lint && tsc -p tsconfig.build.json",
-    "test": "mocha -r ts-node/register './tests/**/*.ts'",
+    "test": "mocha -r ts-node/register './test/**/*.ts'",
     "lint": "NODE_ENV=\"production\" eslint --ext .ts src/",
     "configure-husky": "npx husky install && npx husky add .husky/pre-commit \"npx --no-install lint-staged\""
   },
