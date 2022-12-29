@@ -117,7 +117,6 @@ async function updateAppointmentTime(userId: string, date: Date): Promise<null |
  * @param endDate End date as UNIX ms timestamp
  * @returns Array of appointments
  */
-
 async function getAppointmentsWithinDateRange(startDate: number, endDate: number) {
   try {
     const appointments = await Appointment.find({
@@ -126,6 +125,26 @@ async function getAppointmentsWithinDateRange(startDate: number, endDate: number
         $lte: new Date(endDate),
       },
     })
+    return appointments
+  } catch (err) {
+    // Handle error
+    return err
+  }
+}
+
+/**
+ * 
+ * Deletes one appointment on a request ID
+ * @param {number} requestId Unique identifier of specific appointment
+ * @returns ...
+ * 
+ */
+async function deleteAppointmentFromId(requestId: number) {
+  try {
+    const appointments = await Appointment.findOneAndDelete({
+      request_id: requestId,
+    })
+    // Sometimes appointments is empty!
     return appointments
   } catch (err) {
     // Handle error
@@ -142,5 +161,5 @@ export default {
   getAppointmentsBetweenDates, 
   getAppointmentsWithinDateRange,
   updateAppointmentTime,
-  
+  deleteAppointmentFromId,
 }
