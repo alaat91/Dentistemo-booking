@@ -136,7 +136,7 @@ async function getAppointmentsWithinDateRange(startDate: number, endDate: number
  * 
  * Deletes one appointment on a request ID
  * @param {number} requestId Unique identifier of specific appointment
- * @returns ...
+ * @returns Returns nothing appointment of the deleted
  * 
  */
 async function deleteAppointmentFromId(requestId: number) {
