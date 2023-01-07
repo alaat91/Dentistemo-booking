@@ -173,7 +173,6 @@ async function updateAppointmentTime(
  * @param endDate End date as UNIX ms timestamp
  * @returns Array of appointments
  */
-
 async function getAppointmentsWithinDateRange(
   startDate: number,
   endDate: number
@@ -211,6 +210,26 @@ async function getAppointmentsWithinDateRange(
   }
 }
 
+/**
+ *
+ * Deletes one appointment on a request ID
+ * @param {number} requestId Unique identifier of specific appointment
+ * @returns Returns nothing appointment of the deleted
+ *
+ */
+async function deleteAppointmentFromId(requestId: number) {
+  try {
+    const appointments = await Appointment.findOneAndDelete({
+      request_id: requestId,
+    })
+    // Sometimes appointments is empty!
+    return appointments
+  } catch (err) {
+    // Handle error
+    return err
+  }
+}
+
 export default {
   createAppointment,
   getAllAppointmentsFromClinic,
@@ -220,4 +239,5 @@ export default {
   getAppointmentsBetweenDates,
   getAppointmentsWithinDateRange,
   updateAppointmentTime,
+  deleteAppointmentFromId,
 }
