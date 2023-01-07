@@ -1,5 +1,6 @@
 import { IAppointment } from '../interfaces/appointment'
 import Appointment from '../models/appointment'
+import { getMQTTResponse } from '../util/getMQTTResponse'
 
 /**
  * 
@@ -9,7 +10,6 @@ import Appointment from '../models/appointment'
  * 
  */
 async function createAppointment(appointmentInfo: IAppointment): Promise<IAppointment> {
-  // TODO: Add validation for user_id, dentist_id, issuance, date
   // TODO: send email to user
   try {
     appointmentInfo.issuance = Date.now()
@@ -20,6 +20,10 @@ async function createAppointment(appointmentInfo: IAppointment): Promise<IAppoin
       throw 'Duplicate request found'
     }
 
+    const response = await getMQTTResponse('clinics/slots/verify', 'booking/slots/verify', {start: appointmentInfo.date, dentist: appointmentInfo.dentist_id})
+    if(response.valid === false) {
+      throw 'Invalid appointment time'
+    }
     const appointment = new Appointment(appointmentInfo)
     return await appointment.save()
   } catch {

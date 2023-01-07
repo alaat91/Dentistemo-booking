@@ -11,7 +11,7 @@ const mongoURI: string =
   (process.env.MONGODB_URI as string) || 'mongodb://localhost:27017/dentistimo'
 const mqttURI: string = process.env.MQTT_URI as string
 
-const client: MqttClient = mqtt.connect(mqttURI)
+export const client: MqttClient = mqtt.connect(mqttURI)
 
 // Connect to MongoDB
 mongoose.connect(mongoURI, (err: CallbackError) => {
