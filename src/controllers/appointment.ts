@@ -1,7 +1,6 @@
 import { IAppointment } from '../interfaces/appointment'
 import Appointment from '../models/appointment'
-import { MQTTErrorException } from '../error/MQTTErrorExeptions'
-
+import { MQTTErrorException } from '../util/MQTTErrorException'
 /**
  *
  * Creates one appointment to database.
@@ -12,7 +11,6 @@ import { MQTTErrorException } from '../error/MQTTErrorExeptions'
 async function createAppointment(
   appointmentInfo: IAppointment
 ): Promise<IAppointment> {
-  // TODO: Add validation for user_id, dentist_id, issuance, date
   // TODO: send email to user
   try {
     appointmentInfo.issuance = Date.now()
