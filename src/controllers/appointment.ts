@@ -1,6 +1,7 @@
 import { IAppointment } from '../interfaces/appointment'
 import Appointment from '../models/appointment'
 import { MQTTErrorException } from '../util/MQTTErrorException'
+import { getMQTTResponse } from '../util/getMQTTResponse'
 /**
  *
  * Creates one appointment to database.
@@ -8,10 +9,9 @@ import { MQTTErrorException } from '../util/MQTTErrorException'
  * @returns {Promise<IAppointment>} Promise of the return containing appointment object
  *
  */
-async function createAppointment(
-  appointmentInfo: IAppointment
-): Promise<IAppointment> {
+async function createAppointment(appointmentInfo: IAppointment) {
   // TODO: send email to user
+
   try {
     appointmentInfo.issuance = Date.now()
 
@@ -20,20 +20,52 @@ async function createAppointment(
     })
 
     if (requests.length > 0) {
-      throw 'Duplicate request found'
+      throw new MQTTErrorException({
+        code: 400,
+        message: 'Duplicate request found',
+      })
+      //throw 'Duplicate request found'
+    }
+
+    const response = await getMQTTResponse(
+      'clinics/slots/verify',
+      'booking/slots/verify',
+      { start: appointmentInfo.date, dentist: appointmentInfo.dentist_id }
+    )
+
+    if (response.valid === false) {
+      throw new MQTTErrorException({
+        code: 400,
+        message: 'Invalid appointment time',
+      })
+      //throw 'Invalid appointment time'
     }
 
     if (!requests) {
       throw new MQTTErrorException({
         code: 400,
-        message: '',
+        message: 'Invalid request',
       })
     }
 
     const appointment = new Appointment(appointmentInfo)
     return await appointment.save()
-  } catch {
-    throw 'Something went wrong!'
+  } catch (error) {
+    if (error instanceof MQTTErrorException) {
+      return {
+        error: {
+          code: error.code,
+          message: error.message,
+        },
+      }
+    } else {
+      return {
+        error: {
+          err: 500,
+          message: (error as Error).message,
+        },
+      }
+    }
   }
 }
 
