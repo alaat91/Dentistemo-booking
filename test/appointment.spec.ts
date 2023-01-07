@@ -22,7 +22,7 @@ function generateRandomAppointment(presetUserId?: string | null, presetRequestId
   return {
     user_id: presetUserId || randomId(8),
     request_id: presetRequestId || randomId(20),
-    clinic_id: presetClinicId || randomId(10),
+    dentist_id: presetClinicId || randomId(10),
     issuance: 0,
     date: new Date().getTime(),
   }
@@ -65,7 +65,7 @@ describe('Create appointments for user', () => {
         assert.exists(result, 'Nothing was returned')
         assert.equal(result.user_id, paramPreset.user_id, 'User ID modified/mismatched')
         assert.equal(result.request_id, paramPreset.request_id, 'Request ID modified/mismatched')
-        assert.equal(result.clinic_id, paramPreset.clinic_id, 'Clinic ID modified/mismatched')
+        assert.equal(result.dentist_id, paramPreset.dentist_id, 'Clinic ID modified/mismatched')
         assert.notEqual(result.issuance, 0, "Issuance time unchanged")
         assert.isAtLeast(result.issuance, currentTime, "Issuance time mismatched")
       }).catch((result) => {

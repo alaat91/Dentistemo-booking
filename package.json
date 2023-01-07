@@ -31,10 +31,12 @@
     "mocha": "^10.1.0",
     "mongodb-memory-server": "^8.10.2",
     "mongoose": "^6.7.2",
-    "mqtt": "^4.3.7"
+    "mqtt": "^4.3.7",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/node": "^18.11.9",
+    "@types/uuid": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "dotenv": "^16.0.3",
