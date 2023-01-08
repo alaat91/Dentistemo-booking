@@ -53,6 +53,8 @@ async function createAppointment(appointmentInfo: IAppointment) {
     client.publish('notifier/booking/new', JSON.stringify(appointment), {
       qos: 1,
     })
+    // trigger SSE from gateway
+    client.publish('gateway/bookings/new', 'new booking created', { qos: 1 })
     return await appointment.save()
   } catch (error) {
     if (error instanceof MQTTErrorException) {
