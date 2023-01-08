@@ -215,8 +215,8 @@ async function getAppointmentsWithinDateRange(
   try {
     const appointments = await Appointment.find({
       date: {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate),
+        $gte: startDate,
+        $lte: endDate,
       },
     })
     if (!appointments) {
