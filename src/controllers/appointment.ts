@@ -50,6 +50,9 @@ async function createAppointment(appointmentInfo: IAppointment) {
     }
 
     const appointment = new Appointment(appointmentInfo)
+    client.publish('notifier/booking/new', JSON.stringify(appointment), {
+      qos: 1,
+    })
     // trigger SSE from gateway
     client.publish('gateway/bookings/new', 'new booking created', { qos: 1 })
     return await appointment.save()
