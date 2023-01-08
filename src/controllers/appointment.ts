@@ -2,6 +2,7 @@ import { IAppointment } from '../interfaces/appointment'
 import Appointment from '../models/appointment'
 import { MQTTErrorException } from '../util/MQTTErrorException'
 import { getMQTTResponse } from '../util/getMQTTResponse'
+import { client } from '../app'
 /**
  *
  * Creates one appointment to database.
@@ -49,6 +50,8 @@ async function createAppointment(appointmentInfo: IAppointment) {
     }
 
     const appointment = new Appointment(appointmentInfo)
+    // trigger SSE from gateway
+    client.publish('gateway/bookings/new', 'new booking created', { qos: 1 })
     return await appointment.save()
   } catch (error) {
     if (error instanceof MQTTErrorException) {
