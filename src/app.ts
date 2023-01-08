@@ -58,13 +58,12 @@ client.on('message', async (topic: string, message: Buffer) => {
     }
     case 'bookings/get/all': {
       const parsedMessage = JSON.parse(message.toString())
-      const allAppointments = await appointment.getAppointmentHistoryFromUserId(
+      const allAppointments = await appointment.getAppointmentsFromUserId(
         parsedMessage.user_id
       )
       client.publish(
         parsedMessage.responseTopic,
-        JSON.stringify(allAppointments),
-        {qos: 1}
+        JSON.stringify(allAppointments)
       )
     }
   }
