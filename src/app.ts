@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv'
 import mongoose, { CallbackError } from 'mongoose'
 import appointment from './controllers/appointment'
 import { IAppointment } from './interfaces/appointment'
+import * as cron from 'node-cron'
 
 dotenv.config()
 
@@ -12,6 +13,14 @@ const mongoURI: string =
 const mqttURI: string = process.env.MQTT_URI as string
 
 export const client: MqttClient = mqtt.connect(mqttURI)
+
+cron.schedule('0 * * * *', async () => {
+  const appointments = await appointment.getAppointmentsWithinDateRange(
+    Date.now(),
+    Date.now() + 86400000
+  )
+  client.publish('notifier/reminders', JSON.stringify(appointments), { qos: 1 })
+})
 
 // Connect to MongoDB
 mongoose.connect(mongoURI, (err: CallbackError) => {

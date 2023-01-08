@@ -32,10 +32,12 @@
     "mongodb-memory-server": "^8.10.2",
     "mongoose": "^6.7.2",
     "mqtt": "^4.3.7",
+    "node-cron": "^3.0.2",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/node": "^18.11.9",
+    "@types/node-cron": "^3.0.7",
     "@types/uuid": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
