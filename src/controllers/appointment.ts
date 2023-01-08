@@ -85,7 +85,7 @@ async function createAppointment(appointmentInfo: IAppointment) {
 async function getAppointmentsFromUserId(
   userId: string
 ): Promise<IAppointment[]> {
-  return await Appointment.find({ user_id: userId }, { new: true })
+  return await Appointment.find({ user_id: userId })
     .then((result) => {
       return result
     })
