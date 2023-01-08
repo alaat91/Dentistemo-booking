@@ -110,8 +110,7 @@ async function getUpcomingAppointmentsFromUserId(
       date: {
         $gt: new Date(),
       },
-    },
-    { new: true }
+    }
   )
 }
 
