@@ -36,7 +36,7 @@ client.on('message', async (topic: string, message: Buffer) => {
       const newAppointment = await appointment.createAppointment(
         parsedMessage as IAppointment
       )
-      client.publish('gateway/bookings/new', JSON.stringify(newAppointment))
+      client.publish(parsedMessage.responseTopic, JSON.stringify(newAppointment), {qos: 2})
       break
     }
     case 'bookings/get/range': {
@@ -48,7 +48,8 @@ client.on('message', async (topic: string, message: Buffer) => {
         )
         client.publish(
           parsedMessage.responseTopic,
-          JSON.stringify(appointments)
+          JSON.stringify(appointments),
+          {qos: 1}
         )
       } catch (err) {
         // Handle error
@@ -62,7 +63,8 @@ client.on('message', async (topic: string, message: Buffer) => {
       )
       client.publish(
         parsedMessage.responseTopic,
-        JSON.stringify(allAppointments)
+        JSON.stringify(allAppointments),
+        {qos: 1}
       )
     }
   }

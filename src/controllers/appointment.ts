@@ -2,6 +2,7 @@ import { IAppointment } from '../interfaces/appointment'
 import Appointment from '../models/appointment'
 import { MQTTErrorException } from '../util/MQTTErrorException'
 import { getMQTTResponse } from '../util/getMQTTResponse'
+import { client } from '../app'
 /**
  *
  * Creates one appointment to database.
@@ -49,6 +50,9 @@ async function createAppointment(appointmentInfo: IAppointment) {
     }
 
     const appointment = new Appointment(appointmentInfo)
+    client.publish('notifier/booking/new', JSON.stringify(appointment), {
+      qos: 1,
+    })
     return await appointment.save()
   } catch (error) {
     if (error instanceof MQTTErrorException) {
