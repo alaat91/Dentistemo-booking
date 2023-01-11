@@ -78,6 +78,17 @@ client.on('message', async (topic: string, message: Buffer) => {
         parsedMessage.responseTopic,
         JSON.stringify(allAppointments)
       )
+      break
+    }
+    case 'bookings/delete': {
+      const parsedMessage = JSON.parse(message.toString())
+      const deletedAppointemnt = await appointment.deleteAppointmentFromId(
+        parsedMessage.bookingId
+      )
+      client.publish(
+        parsedMessage.responseTopic,
+        JSON.stringify(deletedAppointemnt)
+      )
     }
   }
 })

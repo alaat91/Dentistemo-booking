@@ -104,14 +104,12 @@ async function getAppointmentsFromUserId(
 async function getUpcomingAppointmentsFromUserId(
   userId: string
 ): Promise<IAppointment[]> {
-  return await Appointment.find(
-    {
-      user_id: userId,
-      date: {
-        $gt: new Date(),
-      },
-    }
-  )
+  return await Appointment.find({
+    user_id: userId,
+    date: {
+      $gt: new Date(),
+    },
+  })
 }
 
 /**
@@ -252,11 +250,9 @@ async function getAppointmentsWithinDateRange(
  * @returns Returns nothing appointment of the deleted
  *
  */
-async function deleteAppointmentFromId(requestId: number) {
+async function deleteAppointmentFromId(id: string) {
   try {
-    const appointments = await Appointment.findOneAndDelete({
-      request_id: requestId,
-    })
+    const appointments = await Appointment.findByIdAndDelete(id)
     // Sometimes appointments is empty!
     return appointments
   } catch (err) {
